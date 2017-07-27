@@ -1,11 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Windows.Forms;
 using Updater.Utils;
 
@@ -29,29 +25,16 @@ namespace Updater
         private MenuItem menuItem8;
         private MenuItem menuItem3;
         private Label label1;
-        private Label label2;
         private Button button1;
-        private Button button2;
-        public static bool flag = false;
-        private readonly List<FileInfo> _filesForLoad;
         private const int BytesInMegabyte = 1048573;
-        private DataGridView dataGridView1;
-        private readonly string _XMLFileName;
 
         public UIForm()
         {
             //
             // Required for Windows Form Designer support
             //
-            _filesForLoad = new List<FileInfo>();
             InitializeComponent();
         }
-
-        public List<FileInfo> FilesForLoad
-        {
-            get { return _filesForLoad; }
-        }
-
 
         private static string VersionStorageName
         {
@@ -102,21 +85,12 @@ namespace Updater
                     return;
                 }
 
-                if (args.Length == 0)
-                {
-                    StartUpdate(false);
-                }
-
                 else
                 {
                     switch (args[0])
                     {
                         case "-u":
                             Application.Run(new UIForm());
-                            break;
-
-                        case "-all":
-                            StartUpdate(true);
                             break;
                     }
                 }
@@ -128,29 +102,6 @@ namespace Updater
                 MessageBox.Show("Ошибка запуска приложения:\r\n", _errorMessage);
             }
 
-        }
-
-        private static void StartUpdate(Boolean downloadAllFiles)
-        {
-            try
-            {
-                var UE = new UploaderEngine(ConnectionString, VersionStorageName, downloadAllFiles);
-                bool isBreak = false;
-
-                if (UE.IsNeedUpdate())
-                {
-                    UE.StartDownload(ref isBreak);
-                }
-
-                if (!isBreak)
-                {
-                    Process.Start(Application.StartupPath + @"\" + StartUpFileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage(ex);
-            }
         }
 
         private static void ErrorMessage(Exception ex)
@@ -256,11 +207,7 @@ namespace Updater
             this._mnuAboout = new System.Windows.Forms.MenuItem();
             this._lblItemCount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // _lstFiles
@@ -268,10 +215,10 @@ namespace Updater
             this._lstFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._lstFiles.Location = new System.Drawing.Point(7, 31);
+            this._lstFiles.Location = new System.Drawing.Point(1, 30);
             this._lstFiles.Name = "_lstFiles";
             this._lstFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this._lstFiles.Size = new System.Drawing.Size(541, 121);
+            this._lstFiles.Size = new System.Drawing.Size(534, 134);
             this._lstFiles.TabIndex = 2;
             this._lstFiles.SelectedIndexChanged += new System.EventHandler(this._lstFiles_SelectedIndexChanged);
             this._lstFiles.DoubleClick += new System.EventHandler(this._lstFiles_DoubleClick);
@@ -326,7 +273,7 @@ namespace Updater
             // 
             this._lblItemCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._lblItemCount.AutoSize = true;
-            this._lblItemCount.Location = new System.Drawing.Point(4, 368);
+            this._lblItemCount.Location = new System.Drawing.Point(4, 179);
             this._lblItemCount.Name = "_lblItemCount";
             this._lblItemCount.Size = new System.Drawing.Size(0, 13);
             this._lblItemCount.TabIndex = 5;
@@ -340,18 +287,9 @@ namespace Updater
             this.label1.TabIndex = 7;
             this.label1.Text = "Предварительный просмотр файлов перед загрузкой в БД";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 168);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(149, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Загружаемые файлы из БД";
-            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(7, 360);
+            this.button1.Location = new System.Drawing.Point(439, 170);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(98, 23);
             this.button1.TabIndex = 9;
@@ -359,42 +297,11 @@ namespace Updater
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this._cmdUpLoad_Click);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(404, 360);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(111, 23);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "Получить файлы";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this._cmdInLoad_Click);
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.dataGridView1.GridColor = System.Drawing.SystemColors.ScrollBar;
-            this.dataGridView1.Location = new System.Drawing.Point(7, 194);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(541, 138);
-            this.dataGridView1.TabIndex = 12;
-            // 
             // UIForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(549, 393);
-            this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(542, 204);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._lblItemCount);
             this.Controls.Add(this._lstFiles);
@@ -406,7 +313,6 @@ namespace Updater
             this.Text = "Работа с файлами базы данных";
             this.Load += new System.EventHandler(this.UIForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.UIForm_KeyDown);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -414,7 +320,7 @@ namespace Updater
 
         #endregion
 
-        #region кнопки
+        #region Buttons
         private void _mnuOpen_Click(object sender, EventArgs e)
         {
             _openFileDialog.ShowDialog(this);
@@ -474,97 +380,7 @@ namespace Updater
         }
         #endregion
 
-
-        #region Загрузка файлов из БД
-        private void _cmdInLoad_Click(object sender, EventArgs e)
-        {
-            String connString;
-            connString = ConfigurationSettings.AppSettings["ConnectionString"];
-            String versionStorageName;
-            versionStorageName = ConfigurationSettings.AppSettings["VersionStorage"];
-
-            SqlConnection cnn = MiscFunction.OpenConnection(connString);
-            const string sqlStr = "SELECT idFile, version, name, DATALENGTH(binaryData) AS fileSize FROM Srv_ProgramFile";
-            var cmd = new SqlCommand(sqlStr, cnn);
-            SqlDataReader sdr = cmd.ExecuteReader();
-
-            int version = sdr.GetOrdinal("version");
-            int fileName = sdr.GetOrdinal("name");
-            int fileSize = sdr.GetOrdinal("fileSize");
-
-            var clientVersionManager = new ClientVersionManager(versionStorageName);
-
-            FilesForLoad.Clear();
-            while (sdr.Read())
-            {
-                var fileInfo = new FileInfo(sdr.GetString(fileName), clientVersionManager.GetVersion(sdr.GetString(fileName)), sdr.GetInt32(version), sdr.GetInt32(fileSize));
-
-                if (fileInfo.NeedUpdate)
-                {
-                    FilesForLoad.Add(fileInfo);
-                }
-            }
-            sdr.Close();
-            cnn.Close();
-
-            //Вывод в таблицу информации при загрузке файлов из БД
-            using (SqlDataAdapter a = new SqlDataAdapter("SELECT version, name, Date FROM Srv_ProgramFile", cnn))
-            {
-                SqlCommandBuilder cb = new SqlCommandBuilder(a);
-                DataSet ds = new DataSet();
-                a.Fill(ds, "Srv_ProgramFile");
-                dataGridView1.DataSource = ds.Tables[0];
-            }
-
-            #region Процесс загрузки
-            try
-            {
-                var filesManager = new FilesManager(connString);
-                var CVManager = new ClientVersionManager(versionStorageName);
-
-                long totalSize = 0;
-                FilesForLoad.ForEach(fileInfo => totalSize += fileInfo.FileSize);
-
-                var progressForm = new frmProgress((int)totalSize);
-                progressForm.Show();
-                progressForm.BringToFront();
-
-                var downloadProgress = new DownloadProgress(totalSize);
-
-                downloadProgress.ProgressChanged +=
-                    (senders, ex) => progressForm.Tick(ex.ChangeSize, string.Format("{0,3:#.#}/{1,3:#.#} MБ ({2})", (decimal)downloadProgress.DownloadedSize / BytesInMegabyte,
-                       (decimal)downloadProgress.TotalSize / BytesInMegabyte, downloadProgress.CurrentFileName));
-
-                foreach (FileInfo fileInfo in FilesForLoad)
-                {
-                    try
-                    {
-                        downloadProgress.SetCurrentFileName(fileInfo.FileName);
-                        filesManager.Download(fileInfo.FileName, downloadProgress);
-                        CVManager.SetVersion(fileInfo.FileName, fileInfo.ServerVersion);
-
-                    }
-                    catch (Exception)
-                    {
-                        progressForm.Fail();
-                        throw;
-                    }
-
-                }
-
-                progressForm.Close();
-            }
-            catch (Exception exception)
-            {
-
-                string _errorMessage = string.Format("Ошибка. {0}{1}{2}", exception.Message, Environment.NewLine, exception.StackTrace);
-                MessageBox.Show("Ошибка запуска приложения:\r\n", _errorMessage);
-            }
-        }
-        #endregion
-        #endregion
-
-        #region боксы
+        #region Boxs
         private void _lstInloadFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -580,10 +396,5 @@ namespace Updater
 
         }
         #endregion
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
