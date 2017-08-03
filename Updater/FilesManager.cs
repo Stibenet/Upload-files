@@ -37,7 +37,8 @@ namespace Updater
             //SHA-1 
             byte[] hashValue;
             hashValue = myRIPEMD160.ComputeHash(fs);         
-            PrintByteArray(hashValue);
+            string result = BitConverter.ToString(hashValue).Replace("-", String.Empty);
+            //System.IO.File.WriteAllText("C:\\Users\\Марсель\\Documents\\Uploader\\Updater\\bin\\Debug\\TestFile2.txt", result);
 
             fs.Close();
 
@@ -45,8 +46,8 @@ namespace Updater
 
             if (!ChekExists(CN, fileName))
             {//INSERT
-                strSQL = "INSERT INTO Srv_ProgramFile (version, name, author, binaryData, Date) " +
-                    "VALUES (1, @name, @autor, @binaryData, @Date)";
+                strSQL = "INSERT INTO Srv_ProgramFile (version, name, author, binaryData, Date, hashCode) " +
+                    "VALUES (1, @name, @autor, @binaryData, @Date, @hashCode)";
             }
             else
             {//UPDATE
@@ -59,20 +60,11 @@ namespace Updater
             cmd.Parameters.Add(new SqlParameter("@autor", SqlDbType.NVarChar, 50)).Value = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             cmd.Parameters.Add(new SqlParameter("@binaryData", SqlDbType.Image)).Value = imageData;
             cmd.Parameters.Add("@Date", DateTime.Now.Date);
+            cmd.Parameters.Add("@hashCode", SqlDbType.NVarChar, 50).Value = result;
             cmd.ExecuteNonQuery();
 
             CN.Close();
         }
-
-        public static void PrintByteArray(byte[] array)
-        {
-            int i;
-            for (i = 0; i < array.Length; i++)
-            {
-                System.IO.File.WriteAllText("C:\\Users\\Марсель\\Documents\\Uploader\\Updater\\bin\\Debug\\TestFile.txt", String.Format("{0:X2}", array[i]));
-            }
-        }
-
 
         /// <summary>
         ///Проверка наличия файла в БД для определения: проводить обновление или добавление новой записи
