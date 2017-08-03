@@ -26,6 +26,7 @@ namespace Updater
         private MenuItem menuItem3;
         private Label label1;
         private Button button1;
+        private MenuItem menuItem4;
         private const int BytesInMegabyte = 1048573;
 
         public UIForm()
@@ -208,6 +209,7 @@ namespace Updater
             this._lblItemCount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.menuItem4 = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
             // _lstFiles
@@ -235,24 +237,28 @@ namespace Updater
             this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem2,
             this.menuItem8,
+            this.menuItem4,
             this._mnuExite});
             this.menuItem1.Text = "Файл";
             // 
             // menuItem2
             // 
             this.menuItem2.Index = 0;
+            this.menuItem2.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
             this.menuItem2.Text = "Открыть";
             this.menuItem2.Click += new System.EventHandler(this._mnuOpen_Click);
             // 
             // menuItem8
             // 
             this.menuItem8.Index = 1;
+            this.menuItem8.Shortcut = System.Windows.Forms.Shortcut.CtrlDel;
             this.menuItem8.Text = "Очистить";
             this.menuItem8.Click += new System.EventHandler(this._mnuClear_Click);
             // 
             // _mnuExite
             // 
-            this._mnuExite.Index = 2;
+            this._mnuExite.Index = 3;
+            this._mnuExite.Shortcut = System.Windows.Forms.Shortcut.AltF4;
             this._mnuExite.Text = "Выход";
             this._mnuExite.Click += new System.EventHandler(this._mnuExite_Click);
             // 
@@ -266,6 +272,7 @@ namespace Updater
             // _mnuAboout
             // 
             this._mnuAboout.Index = 0;
+            this._mnuAboout.Shortcut = System.Windows.Forms.Shortcut.CtrlH;
             this._mnuAboout.Text = "О программе";
             this._mnuAboout.Click += new System.EventHandler(this._mnuAboout_Click);
             // 
@@ -296,6 +303,11 @@ namespace Updater
             this.button1.Text = "Отправить в БД";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this._cmdUpLoad_Click);
+            // 
+            // menuItem4
+            // 
+            this.menuItem4.Index = 2;
+            this.menuItem4.Text = "-";
             // 
             // UIForm
             // 
@@ -396,5 +408,10 @@ namespace Updater
 
         }
         #endregion
+
+        private void menuItem4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
